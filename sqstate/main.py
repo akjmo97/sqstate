@@ -11,7 +11,8 @@ from tensorflow.keras.layers import Dropout, Input, Dense, Conv1D, AveragePoolin
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.utils import get_custom_objects
 
-CURRENT_PATH = os.path.dirname(sys.argv[0])
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
+
 
 def mock_process():
     np.set_printoptions(threshold=10)
