@@ -1,3 +1,6 @@
+import os
+import sys
+
 import tensorflow as tf
 import numpy as np
 import scipy.io as sio
@@ -5,8 +8,11 @@ from tensorflow.keras import backend as bak
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 from tensorflow.keras.layers import Dropout, Input, Dense, Conv1D, AveragePooling1D, Flatten, BatchNormalization, add, \
     Activation
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.utils import get_custom_objects
+
+CURRENT_PATH = os.path.dirname(sys.argv[0])
+
 
 np.set_printoptions(threshold=10)
 
@@ -215,9 +221,11 @@ model.compile(
     metrics=['accuracy', 'mae', 'mape', 'mse']
 )
 
-model.load_weights('my_model_weights_0107.h5')
+model.load_weights(f'{CURRENT_PATH}/my_model_weights_0107.h5')
 
-matfn7 = 'test_data_010701.mat'
+# model = load_model(f'{CURRENT_PATH}/my_model_(1).h5')
+
+matfn7 = f'{CURRENT_PATH}/test_data_010701.mat'
 data7 = sio.loadmat(matfn7)
 example_batch = np.array(data7['q_value'])  # matlab variable name
 example_batch.astype(np.float32)
