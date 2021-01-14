@@ -1,5 +1,4 @@
 import os
-
 import numpy as np
 import scipy.io as sio
 import tensorflow as tf
@@ -22,7 +21,7 @@ def custom_loss(y_true, y_pred):
     return mse + sum_constraint
 
 
-def get_model():
+def get_model(hyperparameter_file_name: str):
     opt = tf.keras.optimizers.Adam(learning_rate=0.0001, beta_1=0.7, beta_2=0.9)
     get_custom_objects().update({'custom_activation': Activation(custom_activation)})
 
@@ -215,28 +214,43 @@ def get_model():
         loss=custom_loss,
         metrics=['accuracy', 'mae', 'mape', 'mse']
     )
-    model.load_weights(f'{CURRENT_PATH}/my_model_weights_0107.h5')
+    model.load_weights(os.path.join(CURRENT_PATH, hyperparameter_file_name))
 
     return model
 
 
-def get_1d_density_matrix():
-    model = get_model()
+def preprocess(file_name: str):
+    data = sio.loadmat(os.path.join(CURRENT_PATH, file_name))
+    data = np.array(data['q_value'])
+    data.astype(np.float32).reshape((1, 4032, 1))
+    return data
 
-    matfn7 = f'{CURRENT_PATH}/test_data_010701.mat'
-    data7 = sio.loadmat(matfn7)
-    example_batch = np.array(data7['q_value'])  # matlab variable name
-    example_batch.astype(np.float32)
-    example_batch = example_batch.reshape((1, 4032, 1))
-    example_result = model.predict(example_batch)
 
-    example_result_r = example_result[:, 0:630]
-    zerod = np.zeros((1, 35))
-    example_result_i = example_result[:, 630:1226]
-    example_result_if = np.hstack((example_result_i, zerod))
-    density_mtx_pred_r = example_result_r
-    density_mtx_pred_i = example_result_if
-    # sio.savemat('density_mtx_pred_i_0107.mat', mdict={'density_mtx_pred_i': density_mtx_pred_i})
-    # sio.savemat('density_mtx_pred_r_0107.mat', mdict={'density_mtx_pred_r': density_mtx_pred_r})
+def reshape_density_matrix(density_matrix_1d, n):
+    density_matrix = np.zeros((n, n))
+    start_i = 0
+    for i in range(1, n):
+        density_matrix += np.diag(density_matrix_1d[start_i:start_i+i+1], -n + i + 1)
+        start_i += i+1
 
-    return density_mtx_pred_r, density_mtx_pred_i
+    return density_matrix
+
+
+def get_density_matrix():
+    data = preprocess("test_data_010701.mat")
+    model = get_model("my_model_weights_0107.h5")
+    result = model.predict(data)
+
+    r_part_raw = result[:, :630][0]
+    i_part_raw = np.hstack((result[:, 630:], np.zeros((1, 35))))[0]
+
+    r_part = reshape_density_matrix(r_part_raw, 35)
+    i_part = reshape_density_matrix(i_part_raw, 35)
+
+    return r_part, i_part
+
+
+if __name__ == '__main__':
+    a, b = get_density_matrix()
+    print(a)
+    print(b)
