@@ -247,10 +247,32 @@ def get_density_matrix():
     r_part = reshape_density_matrix(r_part_raw, 35)
     i_part = reshape_density_matrix(i_part_raw, 35)
 
-    return r_part, i_part
+    l = r_part + i_part*1j
+    density_matrix = l+l.conj().transpose()
+
+    return r_part, i_part, density_matrix
 
 
 if __name__ == '__main__':
-    a, b = get_density_matrix()
-    print(a)
-    print(b)
+    r, i, dm = get_density_matrix()
+    print("Real part:")
+    for row in r:
+        row_str = ""
+        for n in row:
+            if n == 0:
+                row_str += f"      0 "
+            else:
+                row_str += f"{n:.1e} "
+            # row_str += f"{n:.1e} "
+        print(row_str)
+
+    print("Imag part:")
+    for row in i:
+        row_str = ""
+        for n in row:
+            if n == 0:
+                row_str += f"      0 "
+            else:
+                row_str += f"{n:.1e} "
+            # row_str += f"{n:.1e} "
+        print(row_str)
