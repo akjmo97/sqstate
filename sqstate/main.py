@@ -247,32 +247,39 @@ def get_density_matrix():
     r_part = reshape_density_matrix(r_part_raw, 35)
     i_part = reshape_density_matrix(i_part_raw, 35)
 
-    l = r_part + i_part*1j
-    density_matrix = l+l.conj().transpose()
+    l_ch = r_part + i_part * 1j
+    density_matrix = l_ch + l_ch.conj().transpose()
 
     return r_part, i_part, density_matrix
 
 
-if __name__ == '__main__':
-    r, i, dm = get_density_matrix()
-    print("Real part:")
-    for row in r:
-        row_str = ""
-        for n in row:
-            if n == 0:
-                row_str += f"      0 "
-            else:
-                row_str += f"{n:.1e} "
-            # row_str += f"{n:.1e} "
-        print(row_str)
+def print_array(arr, boundary):
+    space = 16*" " if isinstance(arr[0][0], np.complex128) else 7*" "
+    for i, row in enumerate(arr):
+        if boundary[2] < i < boundary[3]:
+            if i == boundary[3] - 1:
+                print("...")
+            continue
 
-    print("Imag part:")
-    for row in i:
         row_str = ""
-        for n in row:
-            if n == 0:
-                row_str += f"      0 "
+        for j, n in enumerate(row):
+            if boundary[0] < j < boundary[1]:
+                row_str += "."
+            elif n == 0:
+                row_str += f"{space}0 "
             else:
-                row_str += f"{n:.1e} "
-            # row_str += f"{n:.1e} "
+                row_str += f"{n:+.1e} "
         print(row_str)
+    print()
+
+
+if __name__ == '__main__':
+    real, imag, dm = get_density_matrix()
+
+    lower_x, upper_x, lower_y, upper_y = 7, 28, 10, 25
+    print("Real part:")
+    print_array(real, [lower_x, upper_x, lower_y, upper_y])
+    print("Imag part:")
+    print_array(imag, [lower_x, upper_x, lower_y, upper_y])
+    print("Density Matrix:")
+    print_array(dm, [5, 32, lower_y, upper_y])
