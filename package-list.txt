@@ -12,9 +12,9 @@ blas=1.0=mkl
 blinker=1.4=py38_0
 brotlipy=0.7.0=py38h27cfd23_1003
 c-ares=1.17.1=h27cfd23_0
-ca-certificates=2020.12.8=h06a4308_0
+ca-certificates=2020.12.5=ha878542_0
 cachetools=4.2.0=pyhd3eb1b0_0
-certifi=2020.12.5=py38h06a4308_0
+certifi=2020.12.5=py38h578d9bd_1
 cffi=1.14.4=py38h261ae71_0
 chardet=3.0.4=py38h06a4308_1003
 click=7.1.2=py_0
@@ -68,6 +68,8 @@ pyparsing=2.4.7=py_0
 pysocks=1.7.1=py38h06a4308_0
 pytest=6.2.1=py38h06a4308_0
 python=3.8.5=h7579374_1
+python_abi=3.8=1_cp38
+qutip=4.5.2=py38hf6732f7_1
 readline=8.0=h7b6447c_0
 requests=2.25.1=pyhd3eb1b0_0
 requests-oauthlib=1.3.0=py_0
