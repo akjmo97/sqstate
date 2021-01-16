@@ -2,6 +2,9 @@ from sqstate.preprocess import preprocess
 from sqstate.model import get_model
 from sqstate.postprocess import PostProcessor
 from sqstate.utils import ArrayPrinter
+import numpy as np
+import matplotlib.pyplot as plt
+from qutip.wigner import wigner, _wig_laguerre_val
 
 
 def main():
@@ -18,6 +21,26 @@ def main():
 
     print("Density Matrix:")
     ArrayPrinter(dm, [5, 32, 10, 25]).print()
+
+    g = 0.2
+    x_vec, y_vec = [i for i in range(-17, 18)], [i for i in range(-17, 18)]
+    X, Y = np.meshgrid(x_vec, y_vec)
+    A2 = g * (X + 1.0j * Y)
+    B = np.abs(A2)
+    B *= B
+    L = 35
+    w0 = 1
+    while L > 0:
+        L -= 1
+        w0 = _wig_laguerre_val(L, B, np.diag(dm, L))
+
+    w0 = w0.real * np.exp(-B*0.5) * (g*g*0.5 / np.pi)
+
+    c = plt.contourf(x_vec, y_vec, w0, 100, cmap="GnBu")
+    c2 = plt.contour(c, levels=c.levels[::10], colors='r', linewidths=0.5)
+    plt.colorbar(c, format='%.1e')
+    plt.clabel(c2, fmt='%.2e', fontsize=8)
+    plt.show()
 
 
 if __name__ == '__main__':
