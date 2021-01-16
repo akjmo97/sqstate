@@ -1,6 +1,10 @@
 # pycharm
 .idea
 
+# model and data
+*.mat
+*.h5
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
