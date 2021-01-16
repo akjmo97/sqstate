@@ -1,7 +1,7 @@
 from sqstate.preprocess import preprocess
 from sqstate.model import get_model
 from sqstate.postprocess import postprocess
-from sqstate.utils import print_array
+from sqstate.utils import ArrayPrinter
 
 
 def main():
@@ -11,13 +11,13 @@ def main():
     real, imag, dm = postprocess(result, 35)
 
     print("Real part:")
-    print_array(real, [7, 28, 10, 25])
+    ArrayPrinter(real, [7, 28, 10, 25]).print()
 
     print("Imag part:")
-    print_array(imag, [7, 28, 10, 25])
+    ArrayPrinter(imag, [7, 28, 10, 25]).print()
 
     print("Density Matrix:")
-    print_array(dm, [5, 32, 10, 25])
+    ArrayPrinter(dm, [5, 32, 10, 25]).print()
 
 
 if __name__ == '__main__':
