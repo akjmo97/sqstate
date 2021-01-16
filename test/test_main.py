@@ -36,7 +36,7 @@ def main():
 
     w0 = w0.real * np.exp(-B*0.5) * (g*g*0.5 / np.pi)
 
-    cont0 = plt.axes().contourf(x_vec, y_vec, w0, 100)
+    plt.axes().contourf(x_vec, y_vec, w0, 100)
     plt.show()
 
 
