@@ -18,3 +18,7 @@ def main():
 
     print("Density Matrix:")
     print_array(dm, [5, 32, 10, 25])
+
+
+if __name__ == '__main__':
+    main()
