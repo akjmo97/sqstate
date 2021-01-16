@@ -29,5 +29,5 @@ jobs:
       - run: conda list
       - run: conda install pytest-cov
       - run: conda install codecov
-      - run: pytest -v --cov-report=xml --cov=./
+      - run: pytest -v --cov-report=xml --cov=./sqstate
       - run: codecov
