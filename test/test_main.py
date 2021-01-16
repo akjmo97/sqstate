@@ -22,7 +22,7 @@ def main():
     print("Density Matrix:")
     ArrayPrinter(dm, [5, 32, 10, 25]).print()
 
-    g = 0.5
+    g = 0.2
     x_vec, y_vec = [i for i in range(-17, 18)], [i for i in range(-17, 18)]
     X, Y = np.meshgrid(x_vec, y_vec)
     A2 = g * (X + 1.0j * Y)
@@ -36,7 +36,10 @@ def main():
 
     w0 = w0.real * np.exp(-B*0.5) * (g*g*0.5 / np.pi)
 
-    plt.axes().contourf(x_vec, y_vec, w0, 100)
+    c = plt.contourf(x_vec, y_vec, w0, 100, cmap="GnBu")
+    c2 = plt.contour(c, levels=c.levels[::10], colors='r', linewidths=0.5)
+    plt.colorbar(c, format='%.1e')
+    plt.clabel(c2, fmt='%.2e', fontsize=8)
     plt.show()
 
 
