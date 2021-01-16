@@ -1,37 +1,42 @@
 import numpy as np
 
 
-def reshape_l_ch(result_partition, n):
-    l_ch = np.zeros((n, n))
-    start_i = 0
-    for i in range(1, n):
-        l_ch += np.diag(result_partition[start_i:start_i + i + 1], -n + i + 1)
-        start_i += i+1
+class PostProcessor:
+    def __init__(self, result, n):
+        self.result = result[0]
+        self.n = n
 
-    return l_ch
+        self.__r_part = None
+        self.__i_part = None
+        self.__l_ch_real = None
+        self.__l_ch_imag = None
 
+        self.l_ch = None
+        self.density_matrix = None
 
-def separate_result(result):
-    r_part = result[:, :630][0]
-    i_part = np.hstack((result[:, 630:], np.zeros((1, 35))))[0]
+    def __separate_result(self):
+        sep = int((self.n ** 2 - self.n) / 2 + self.n)
+        self.__r_part = self.result[:sep]
+        self.__i_part = np.hstack((self.result[sep:], np.zeros(self.n)))
 
-    return r_part, i_part
+    @classmethod
+    def __reshape_l_ch(cls, result_partition, n):
+        l_ch = np.zeros((n, n))
+        start_i = 0
+        for i in range(n):
+            l_ch += np.diag(result_partition[start_i:start_i + i + 1], -n + i + 1)
+            start_i += i + 1
+        return l_ch
 
+    def __calculate_l_ch(self):
+        self.__l_ch_real = self.__reshape_l_ch(self.__r_part, self.n)
+        self.__l_ch_imag = self.__reshape_l_ch(self.__i_part, self.n) * 1j
+        self.l_ch = self.__l_ch_real + self.__l_ch_imag
 
-def combine_l_ch(r_part, i_part):
-    return r_part + i_part * 1j
+    def __calculate_density_matrix(self):
+        self.density_matrix = self.l_ch.dot(self.l_ch.conj().transpose())
 
-
-def calculate_density_matrix(l_ch):
-    density_matrix = l_ch .dot(l_ch.conj().transpose())
-
-    return density_matrix
-
-
-def postprocess(result, n):
-    r_part, i_part = separate_result(result)
-    r_part, i_part = reshape_l_ch(r_part, n), reshape_l_ch(i_part, n)
-    l_ch = combine_l_ch(r_part, i_part)
-    density_matrix = calculate_density_matrix(l_ch)
-
-    return r_part, i_part, density_matrix
+    def run(self):
+        self.__separate_result()
+        self.__calculate_l_ch()
+        self.__calculate_density_matrix()
