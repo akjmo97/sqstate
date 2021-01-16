@@ -4,7 +4,7 @@ from sqstate.postprocess import PostProcessor
 from sqstate.utils import ArrayPrinter
 import numpy as np
 import matplotlib.pyplot as plt
-from qutip.wigner import wigner, _wig_laguerre_val
+from qutip.wigner import _wig_laguerre_val
 
 
 def main():
@@ -36,10 +36,20 @@ def main():
 
     w0 = w0.real * np.exp(-B*0.5) * (g*g*0.5 / np.pi)
 
-    c = plt.contourf(x_vec, y_vec, w0, 100, cmap="GnBu")
-    c2 = plt.contour(c, levels=c.levels[::10], colors='r', linewidths=0.5)
-    plt.colorbar(c, format='%.1e')
-    plt.clabel(c2, fmt='%.2e', fontsize=8)
+    fig = plt.figure(figsize=(12, 9))
+    ax = fig.gca(projection='3d')
+    ax.plot_surface(X, Y, w0, rstride=1, cstride=1, cmap="Spectral_r")
+    ax.contourf(X, Y, w0, 1000, zdir='z', offset=-2e-2, cmap="GnBu")
+    ax.contour(X, Y, w0, zdir='z', offset=-2e-2, colors='r', linewidths=0.5)
+    # ax.clabel(c, fmt='%.2e', fontsize=8)
+    ax.contourf(X, Y, w0, 50, zdir='x', offset=-17, cmap="winter")
+    ax.contourf(X, Y, w0, 50, zdir='y', offset=17, cmap="winter")
+
+    ax.set_zlim(-2e-2, 1e-2)
+    ax.margins(0)
+    plt.tick_params(axis='both', labelbottom=False, labelleft=False)
+    plt.tight_layout()
+
     plt.show()
 
 
