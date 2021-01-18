@@ -17,6 +17,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           miniconda-version: "latest"
+          channels: conda-forge
           activate-environment: sqstate
           environment-file: package-list.txt
 
@@ -27,4 +28,6 @@ jobs:
       - run: conda info
       - run: conda list
       - run: conda install pytest-cov
-      - run: pytest -v --cov-report=xml --cov=./
+      - run: conda install codecov
+      - run: pytest -v --cov-report=xml --cov=./sqstate
+      - run: codecov
