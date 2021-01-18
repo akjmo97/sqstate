@@ -1,3 +1,5 @@
+import os
+from sqstate import CURRENT_PATH
 from sqstate.preprocess import preprocess
 from sqstate.model import get_model
 from sqstate.postprocess import PostProcessor
@@ -6,29 +8,37 @@ from sqstate.plot import calculate_wigner, plot_wigner
 
 
 def main():
+    data_path = os.path.join(CURRENT_PATH, "../data")
+    file_name = [
+        f for f in os.listdir(data_path) if os.path.isfile(os.path.join(data_path, f))
+    ]
+    file_name.sort()
+
     n = 35
-    data = preprocess("test_data_010701.mat")
     model = get_model("my_model_weights_0107.h5")
-    result = model.predict(data)
 
-    postprocessor = PostProcessor(result, n)
-    postprocessor.run()
-    l_ch, dm = postprocessor.l_ch, postprocessor.density_matrix
+    for file in file_name:
+        data = preprocess(os.path.join(data_path, file))
+        result = model.predict(data)
 
-    print("L:")
-    ArrayPrinter(l_ch, [5, 32, 10, 25]).print()
+        postprocessor = PostProcessor(result, n)
+        postprocessor.run()
+        l_ch, dm = postprocessor.l_ch, postprocessor.density_matrix
 
-    print("Density Matrix:")
-    ArrayPrinter(dm, [5, 32, 10, 25]).print()
+        # print("L:")
+        # ArrayPrinter(l_ch, [5, 32, 10, 25]).print()
+        #
+        # print("Density Matrix:")
+        # ArrayPrinter(dm, [5, 32, 10, 25]).print()
 
-    xs, ys, ws = calculate_wigner(
-        dm,
-        range(-int(n/2), int(n/2 + 1)),
-        range(-int(n/2), int(n/2 + 1)),
-        n
-    )
-    p = plot_wigner(xs, ys, ws)
-    p.show()
+        xs, ys, ws = calculate_wigner(
+            dm,
+            range(-int(n/2), int(n/2 + 1)),
+            range(-int(n/2), int(n/2 + 1)),
+            n
+        )
+        p = plot_wigner(xs, ys, ws, file)
+        p.show()
 
 
 if __name__ == '__main__':
