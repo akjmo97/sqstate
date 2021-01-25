@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.special import factorial
+from scipy.special import genlaguerre
 
 
 def laguerre(x, n, alpha):
@@ -13,20 +13,30 @@ def laguerre(x, n, alpha):
     return laguerre_l
 
 
+def factorial_ij(i, j):
+    ans = i
+    while i <= j:
+        ans *= i+1
+        i += 1
+
+    return ans
+
+
 def moyal(x, p, m, n):
     if n >= m:
         w = 1 / np.pi
         w *= np.exp(-(np.square(x) + np.square(p))) * np.power(-1, m)
-        w *= np.sqrt(np.power(2, n-m) * factorial(m)/factorial(n))
+
+        w *= np.sqrt(np.power(2, n-m) / factorial_ij(m+1, n))
         w *= np.power(x - p*1j, n-m)
-        w *= laguerre((2*np.square(x) + 2*np.square(p)), m, n-m)
+        w *= genlaguerre(m, n-m)(2*np.square(x) + 2*np.square(p))
         return w
     else:
         w = 1 / np.pi
         w *= np.exp(-(np.square(x) + np.square(p))) * np.power(-1, n)
-        w *= np.sqrt(np.power(2, m-n) * factorial(n) / factorial(m))
+        w *= np.sqrt(np.power(2, m-n) / factorial_ij(n+1, m))
         w *= np.power(x + p*1j, m-n)
-        w *= laguerre((2 * np.square(x) + 2 * np.square(p)), n, m-n)
+        w *= genlaguerre(n, m-n)(2 * np.square(x) + 2 * np.square(p))
         return w
 
 
