@@ -33,9 +33,9 @@ def main():
         # ArrayPrinter(dm, [5, 32, 10, 25]).print()
 
         xs, ys, ws = wigner(dm, range(-int(n/2), int(n/2 + 1)))
-        print(ws)
-        # p = plot_wigner(xs, ys, ws, file)
-        # p.show()
+        # print(ws)
+        p = plot_wigner(xs, ys, ws, file)
+        p.show()
 
 
 if __name__ == '__main__':

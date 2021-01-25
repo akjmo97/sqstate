@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def plot_wigner(xs, ys, ws, title, z_lim=(-2e-2, 1e-2), size=(12, 9)):
+def plot_wigner(xs, ys, ws, title, z_lim=(-3e-1, 1e-1), size=(12, 9)):
     fig = plt.figure(figsize=size)
     ax = fig.gca(projection='3d')
     ax.plot_surface(xs, ys, ws, rstride=1, cstride=1, cmap="Spectral_r")
