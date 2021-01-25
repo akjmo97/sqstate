@@ -4,7 +4,8 @@ from sqstate.preprocess import preprocess
 from sqstate.model import get_model
 from sqstate.postprocess import PostProcessor
 from sqstate.utils import ArrayPrinter
-from sqstate.plot import calculate_wigner, plot_wigner
+from sqstate.wigner import wigner
+from sqstate.plot import plot_wigner
 
 
 def main():
@@ -31,12 +32,7 @@ def main():
         # print("Density Matrix:")
         # ArrayPrinter(dm, [5, 32, 10, 25]).print()
 
-        xs, ys, ws = calculate_wigner(
-            dm,
-            range(-int(n/2), int(n/2 + 1)),
-            range(-int(n/2), int(n/2 + 1)),
-            n
-        )
+        xs, ys, ws = wigner(dm, range(-int(n/2), int(n/2 + 1)))
         p = plot_wigner(xs, ys, ws, file)
         p.show()
 

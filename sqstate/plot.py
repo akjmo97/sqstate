@@ -1,22 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from qutip.wigner import _wig_laguerre_val
-
-
-def calculate_wigner(dm, x_range, y_range, n, scale=0.2):
-    x_vec = [i for i in x_range]
-    y_vec = [i for i in y_range]
-
-    xs, ys = np.meshgrid(x_vec, y_vec)
-    a2 = scale * (xs + 1.0j * ys)
-    b = np.abs(a2) * np.abs(a2)
-
-    w0 = 1
-    while n > 0:
-        n -= 1
-        w0 = _wig_laguerre_val(n, b, np.diag(dm, n))
-
-    return xs, ys, w0.real * np.exp(-b * 0.5) * (scale * scale * 0.5 / np.pi)
 
 
 def plot_wigner(xs, ys, ws, title, z_lim=(-2e-2, 1e-2), size=(12, 9)):
