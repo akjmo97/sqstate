@@ -4,13 +4,14 @@ from sqstate.preprocess import preprocess
 from sqstate.model import get_model
 from sqstate.postprocess import PostProcessor
 from sqstate.utils import ArrayPrinter
-from sqstate.plot import calculate_wigner, plot_wigner
+import h5py
 
 
 def main():
     data_path = os.path.join(CURRENT_PATH, "../data")
     file_name = [
-        f for f in os.listdir(data_path) if os.path.isfile(os.path.join(data_path, f))
+        # f for f in os.listdir(data_path) if os.path.isfile(os.path.join(data_path, f))
+        "SQ4_0117.mat"
     ]
     file_name.sort()
 
@@ -25,20 +26,20 @@ def main():
         postprocessor.run()
         l_ch, dm = postprocessor.l_ch, postprocessor.density_matrix
 
+        f = h5py.File(os.path.join(CURRENT_PATH, "../data/dm.hdf5"), "w")
+        f.create_group("sq4")
+        f.create_dataset("sq4/real", data=dm.real)
+        f.create_dataset("sq4/imag", data=dm.imag)
+
+        # f = h5py.File(os.path.join(CURRENT_PATH, "../data/dm.hdf5"), "r")
+        # print(f.get("sq3/real")[()])
+        f.close()
+
         # print("L:")
         # ArrayPrinter(l_ch, [5, 32, 10, 25]).print()
         #
         # print("Density Matrix:")
         # ArrayPrinter(dm, [5, 32, 10, 25]).print()
-
-        xs, ys, ws = calculate_wigner(
-            dm,
-            range(-int(n/2), int(n/2 + 1)),
-            range(-int(n/2), int(n/2 + 1)),
-            n
-        )
-        p = plot_wigner(xs, ys, ws, file)
-        p.show()
 
 
 if __name__ == '__main__':

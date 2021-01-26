@@ -2,8 +2,8 @@
 .idea
 
 # model and data
-*.mat
 *.h5
+data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
