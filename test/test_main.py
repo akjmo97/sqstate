@@ -11,7 +11,7 @@ def main():
     data_path = os.path.join(CURRENT_PATH, "../data")
     file_name = [
         # f for f in os.listdir(data_path) if os.path.isfile(os.path.join(data_path, f))
-        "SQ4_0117.mat"
+        "SQ4"
     ]
     file_name.sort()
 
@@ -27,12 +27,21 @@ def main():
         l_ch, dm = postprocessor.l_ch, postprocessor.density_matrix
 
         f = h5py.File(os.path.join(CURRENT_PATH, "../data/dm.hdf5"), "w")
-        f.create_group("sq4")
-        f.create_dataset("sq4/real", data=dm.real)
-        f.create_dataset("sq4/imag", data=dm.imag)
+        f.create_group(file)
+        f.create_dataset(f"{file}/real", data=dm.real)
+        f.create_dataset(f"{file}/imag", data=dm.imag)
+        f.close()
 
-        # f = h5py.File(os.path.join(CURRENT_PATH, "../data/dm.hdf5"), "r")
-        # print(f.get("sq3/real")[()])
+        print("Real part")
+        print(dm.real[0])
+        print("Imag part")
+        print(dm.imag[0])
+
+        f = h5py.File(os.path.join(CURRENT_PATH, "../data/dm.hdf5"), "r")
+        print("Real part")
+        print(f.get(f"{file}/real")[()][0])
+        print("Imag part")
+        print(f.get(f"{file}/imag")[()][0])
         f.close()
 
         # print("L:")
