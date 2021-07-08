@@ -15,6 +15,7 @@ def main():
 
     n = 35
     model = get_model("Final_0321.h5")
+    print(model.summary())
 
     # data = preprocess(os.path.join(data_path, file_name))
     # result = model.predict(data)
