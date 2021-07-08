@@ -16,15 +16,15 @@ def main():
     n = 35
     model = get_model("Final_0321.h5")
 
-    data = preprocess(os.path.join(data_path, file_name))
-    result = model.predict(data)
+    # data = preprocess(os.path.join(data_path, file_name))
+    # result = model.predict(data)
 
-    postprocessor = PostProcessor(result, n)
-    postprocessor.run()
-    l_ch, dm = postprocessor.l_ch, postprocessor.density_matrix
+    # postprocessor = PostProcessor(result, n)
+    # postprocessor.run()
+    # l_ch, dm = postprocessor.l_ch, postprocessor.density_matrix
 
-    print(l_ch)
-    print(dm)
+    # print(l_ch)
+    # print(dm)
 
 
 if __name__ == '__main__':
