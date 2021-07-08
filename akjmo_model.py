@@ -1,29 +1,33 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
 from sqstate import CURRENT_PATH
 import os
 import tensorflow as tf
 from tensorflow.keras import backend as bak
-from tensorflow.keras.layers import Input, Dense, Conv1D, AveragePooling1D, Flatten, BatchNormalization, add, Activation
+from tensorflow.keras.layers import Dropout, Input, Dense, Conv1D, AveragePooling1D, Flatten, BatchNormalization, add,     Activation
 from tensorflow.keras.models import Model
 from tensorflow.keras.utils import get_custom_objects
+
 
 
 def custom_activation(x):
     return bak.relu(x) * 1
 
-
-h = tf.keras.losses.Huber(delta=1.0)
-
+h=tf.keras.losses.Huber(delta=1.0)
 
 def custom_loss(y_true, y_pred):
         h_loss  = h(y_true,y_pred)
         return(h_loss)
-
-
+    
 def Nor_L2(x):
     x = bak.l2_normalize(x, axis=-1)
     return x
 
-
+    
 def get_model(hyperparameter_file_name: str):
     opt = tf.keras.optimizers.Adam(learning_rate=0.0001, beta_1=0.7, beta_2=0.9)
     get_custom_objects().update({'custom_activation': Activation(custom_activation)})
@@ -35,9 +39,13 @@ def get_model(hyperparameter_file_name: str):
     time0=BatchNormalization()(time0)
     time0=Activation(custom_activation, name='act1-time0')(time0)
 
+
+
     time0X=Conv1D(96,1,strides=1, padding="same",kernel_initializer=tf.random_normal_initializer(stddev=0.001),
                 bias_initializer='zeros',name='conv-time0x')(time0)
     time0X=BatchNormalization()(time0X)
+
+
 
     time1=Conv1D(32,1,strides=1, padding="same",kernel_initializer=tf.random_normal_initializer(stddev=0.001),
                 bias_initializer='zeros',name='conv1-time1')(time0)
@@ -53,9 +61,12 @@ def get_model(hyperparameter_file_name: str):
     time2=add([time0X,time1])
     time2=Activation(custom_activation, name='act1-time2')(time2)
 
+
+
     time2=AveragePooling1D(    pool_size=2)(time2)
     time2=BatchNormalization()(time2)
     time2=Activation(custom_activation, name='POOL1-act')(time2)
+
 
     time3=Conv1D(32,1,strides=1, padding="same",kernel_initializer=tf.random_normal_initializer(stddev=0.001),
              bias_initializer='zeros',name='conv1-time3')(time2)
@@ -85,13 +96,19 @@ def get_model(hyperparameter_file_name: str):
     time6=add([time4,time5])
     time6=Activation(custom_activation, name='act1-time6')(time6)
 
+
+
     time6=AveragePooling1D(    pool_size=4)(time6)
     time6=BatchNormalization()(time6)
     time6=Activation(custom_activation, name='POOL2-act')(time6)
 
+
+
     time6X=Conv1D(128,1,strides=1, padding="same",kernel_initializer=tf.random_normal_initializer(stddev=0.001),
                 bias_initializer='zeros',name='conv-time6x')(time6)
     time6X=BatchNormalization()(time6X)
+
+
 
     time7=Conv1D(64,1,strides=1, padding="same",kernel_initializer=tf.random_normal_initializer(stddev=0.001),
                       bias_initializer='zeros',name='conv1-time7')(time6)
@@ -135,13 +152,19 @@ def get_model(hyperparameter_file_name: str):
     time12=add([time10,time11])
     time12=Activation(custom_activation, name='act1-time12')(time12)
 
+
+
     time12=AveragePooling1D(    pool_size=8)(time12)
     time12=BatchNormalization()(time12)
     time12=Activation(custom_activation, name='POOL3-act')(time12)
 
+
+
     time12X=Conv1D(196,1,strides=1, padding="same",kernel_initializer=tf.random_normal_initializer(stddev=0.001),
                 bias_initializer='zeros',name='conv-time12x')(time12)
     time12X=BatchNormalization()(time12X)
+
+
 
     time13=Conv1D(96,1,strides=1, padding="same",kernel_initializer=tf.random_normal_initializer(stddev=0.001),
                        bias_initializer='zeros',name='conv1-time13')(time12)
@@ -213,14 +236,19 @@ def get_model(hyperparameter_file_name: str):
     time22=add([time20,time21])
     time22=Activation(custom_activation, name='act1-time22')(time22)
 
+
+
     time22X=AveragePooling1D(    pool_size=2)(time22)
     time22X=BatchNormalization()(time22X)
     time22X=Activation(custom_activation, name='POOL4-act')(time22X)
+
+
 
     cnn1d_feature=Flatten()(time22X)
     DTX_out=Dense(1225,kernel_initializer=tf.random_normal_initializer(stddev=0.001))(cnn1d_feature)
     DTX_out=Activation(custom_activation, name='act1-dtx_out')(DTX_out)
     DTX_out=Dense(1225,activation='linear',kernel_initializer=tf.random_normal_initializer(stddev=0.001))(DTX_out)
+
 
     DTX_out= tf.keras.layers.Lambda(Nor_L2, name="lambda_layer")(DTX_out)
 
@@ -231,6 +259,13 @@ def get_model(hyperparameter_file_name: str):
         loss=custom_loss,
         metrics=['accuracy', 'mae', 'mape', 'mse']
     )
-    model.load_weights(os.path.join(CURRENT_PATH, "../model_args", hyperparameter_file_name))
+    model.load_weights(os.path.join(CURRENT_PATH, hyperparameter_file_name))
 
     return model
+
+
+# In[ ]:
+
+
+
+
